@@ -6,6 +6,13 @@ Monobridge is a small, free Mac app that talks to the Monogram console directly 
 
 *Unofficial community project, not affiliated with or endorsed by Monogram or Palette Gear.*
 
+> **Tested with Logic Pro only.** Monobridge hasn't been tested with Photoshop, Lightroom, Premiere, Capture One or other apps. Monogram's own software had built-in plugins for those apps; **Monobridge doesn't**. It sends plain MIDI and keystrokes, so:
+> - **Music apps** with MIDI Learn (Ableton, Cubase, etc.) should work, but are untested.
+> - **Lightroom** may work through the free [MIDI2LR](https://github.com/rsjaffe/MIDI2LR) plugin, but is untested.
+> - **Photoshop and other apps** only get the keyboard shortcuts you assign yourself, not the deep control Monogram's plugins provided.
+>
+> If you use it with another app, please share what works in [Issues](../../issues).
+
 ![The Monobridge control panel, showing display settings and per-control MIDI, keystroke and colour assignments](control-panel.png)
 
 *The control panel with a Logic Pro setup: Core buttons as Space/Record, Orbiter as pitch bend and modulation, and coloured sliders and buttons.*
@@ -23,10 +30,10 @@ Monobridge is a small, free Mac app that talks to the Monogram console directly 
   - Any CC or note number and any MIDI channel, per control
 - **Sets LED colours** for every module, and for each button or slider on the 3-control modules.
 - **Puts your own logo and label on the Core's display**, with size and rotation controls.
-- **Imports your old Monogram profiles** (`.monogram` files), including colours, logo, MIDI assignments and keystrokes.
+- **Imports your old Monogram profiles** (`.monogram` files), including colours, logo, MIDI assignments and keystrokes. Assignments that used Monogram's app plugins aren't carried over.
 - Runs quietly in the menu bar, reconnects by itself after unplugging or sleep, and can start at login.
 
-Tested with Logic Pro on an Apple Silicon Mac, with a Core, an Orbiter, 3-slider and 3-button modules. The single button, slider and dial modules and the 3-dial module are supported from the protocol but **untested**, so reports are very welcome.
+Hardware tested: a Core, an Orbiter, 3-slider and 3-button modules, on an Apple Silicon Mac with Logic Pro. The single button, slider and dial modules and the 3-dial module are supported from the protocol but **untested**, so reports are very welcome.
 
 ## Install
 
