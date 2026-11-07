@@ -1,0 +1,12 @@
+.venv/
+build/
+dist/
+__pycache__/
+*.spec
+*.icns
+menubar_*.png
+mapping.json
+mapping.json.tmp
+*.monogram
+patch*.py
+.DS_Store
