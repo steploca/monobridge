@@ -6,6 +6,10 @@ Monobridge is a small, free Mac app that talks to the Monogram console directly 
 
 *Unofficial community project, not affiliated with or endorsed by Monogram or Palette Gear.*
 
+![The Monobridge control panel, showing display settings and per-control MIDI, keystroke and colour assignments](control-panel.png)
+
+*The control panel with a Logic Pro setup: Core buttons as Space/Record, Orbiter as pitch bend and modulation, and coloured sliders and buttons.*
+
 ---
 
 ## What it does
