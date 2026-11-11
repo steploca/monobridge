@@ -38,6 +38,7 @@ CORE_PID = 0xA2C5          # Monogram Core v2 ("Condor")
 BAUD = 300000
 FLAG, ESC = 0x7E, 0x7D
 PING_SECONDS = 3
+WATCHDOG_SECONDS = 15
 
 MODULE_TYPES = {
     0: "core", 128: "core", 25: "core",
@@ -106,6 +107,7 @@ class Core:
             sys.exit("Monogram Core not found. Is it plugged in, and is Monogram Creator quit?")
         self.ser = serial.Serial(self.port_name, BAUD, timeout=0.05)
         self._buf = bytearray()
+        self.last_rx = time.time()
         self._lock = threading.Lock()
         self._alive = True
 
@@ -135,7 +137,11 @@ class Core:
                 raise serial.SerialException("connection lost")
             chunk = self.ser.read(4096)
             if not chunk:
+                # The Core answers every ping, so long silence means it has hung
+                if time.time() - self.last_rx > WATCHDOG_SECONDS:
+                    raise serial.SerialException("console stopped responding")
                 continue
+            self.last_rx = time.time()
             self._buf += chunk
             while FLAG in self._buf:
                 idx = self._buf.index(FLAG)
@@ -257,8 +263,10 @@ def write_screen(core, img, live=False):
     if not live:
         core.send({"invoke_display": 0x03})          # display off while drawing
     for n, i in enumerate(range(0, len(data), size)):
+        if not getattr(core, "_alive", True):
+            return                                   # console went away mid-draw
         core.send({"write_display_slow": [True, 0, n * rows, SCREEN, (n + 1) * rows, data[i:i + size]]})
-        time.sleep(0.004)
+        time.sleep(0.025)                            # let the Core keep up (~1.5 s per image)
     core.send({"invoke_display": 0x04})              # display on
 
 
@@ -560,9 +568,7 @@ class Bridge:
             self.apply_profile()
         self.apply_colors()
         if not self._screen_done and self.map.get("screen"):
-            print("Drawing the Core display...")
-            self.draw_screen()
-            self._screen_done = True
+            self.schedule_screen()
         dz = self.map.get("orbiter_deadzone")
         if dz and self.core:
             for lid, info in self.modules.items():
@@ -632,8 +638,30 @@ class Bridge:
             if k[:2] == (uuid, control):
                 del self.state[k]
 
+    def schedule_screen(self, delay=3.0):
+        """Draw the display once the layout has settled (the Core reports modules one
+        by one right after it starts) and in a background thread, so the reader
+        keeps draining the Core's messages while the image is sent."""
+        t = getattr(self, "_screen_timer", None)
+        if t:
+            t.cancel()
+        core = self.core
+
+        def go():
+            if self.core is core and core is not None:
+                print("Drawing the Core display...")
+                self.draw_screen()
+                self._screen_done = True
+        self._screen_timer = threading.Timer(delay, go)
+        self._screen_timer.daemon = True
+        self._screen_timer.start()
+
     def draw_screen(self):
-        if self.core and self.map.get("screen"):
+        if not (self.core and self.map.get("screen")):
+            return
+        if not hasattr(self, "_draw_lock"):
+            self._draw_lock = threading.Lock()
+        with self._draw_lock:                        # never two images at once
             write_screen(self.core, self.screen_image())
 
     def set_color(self, uuid, color, sub=None):

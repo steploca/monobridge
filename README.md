@@ -73,6 +73,7 @@ In your DAW, enable the MIDI input **Monobridge**. In Logic, that's **Settings �
 ## Troubleshooting
 
 - **The icon stays faded.** Click it and read the status line. "Console busy" means another program, usually Monogram Creator, is holding the console; quit it. "Waiting for the console" means it can't see the console; try a different USB cable or port.
+- **The console stops responding or the Core's screen shows garbled graphics.** Quit Monobridge from the menu bar and open it again. Version 0.9.1 and later fix the usual cause (a screen redraw while the Core was starting up) and reconnect automatically if the console goes quiet, so update if you're on 0.9.0.
 - **Keystrokes do nothing.** Allow Monobridge under System Settings → Privacy & Security → Accessibility. After installing an update you may need to remove it there with **–** and add it again.
 - **Scrolling scrolls the wrong window.** Scrolling always goes to the window under the mouse pointer, just like a mouse wheel. For Logic, MIDI or keystrokes are more reliable.
 - **Please report bugs** in [Issues](../../issues), with the log (menu → Show Log) and, if you can, the output of the `monitor` command below.

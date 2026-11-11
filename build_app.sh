@@ -33,7 +33,7 @@ pyinstaller --noconfirm --windowed --log-level WARN \
 
 PLIST=dist/Monobridge.app/Contents/Info.plist
 plutil -replace LSUIElement -bool true "$PLIST"                     # menu-bar only, no Dock icon
-plutil -replace CFBundleShortVersionString -string "0.9" "$PLIST"
+plutil -replace CFBundleShortVersionString -string "0.9.1" "$PLIST"
 plutil -replace NSHumanReadableCopyright -string "MIT licence. Not affiliated with Monogram." "$PLIST"
 codesign --force --deep --sign - dist/Monobridge.app                # ad-hoc signature (required on Apple Silicon)
 

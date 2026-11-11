@@ -160,7 +160,22 @@ def main():
     os.makedirs(SUPPORT, exist_ok=True)
     os.makedirs(os.path.dirname(LOG), exist_ok=True)
     log = open(LOG, "a", buffering=1)
-    sys.stdout = sys.stderr = log
+
+    class Stamped:                                   # timestamp every log line
+        def __init__(self, f):
+            self.f, self.bol = f, True
+
+        def write(self, t):
+            import time as _t
+            for part in t.splitlines(True):
+                if self.bol and part.strip():
+                    self.f.write(_t.strftime("%Y-%m-%d %H:%M:%S  "))
+                self.f.write(part)
+                self.bol = part.endswith("\n")
+
+        def flush(self):
+            self.f.flush()
+    sys.stdout = sys.stderr = Stamped(log)
     print(f"--- {APP_NAME} starting ---")
     MonobridgeApp().run()
 
